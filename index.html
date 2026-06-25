@@ -1,274 +1,223 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App de Dispositivos</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  <!-- Viewport otimizado para iPhone/iPad com safe area -->
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f3f4f6;
+      padding: 24px;
+      color: #1f2937;
+    }
 
-  <!-- Theme color para barra de endereço (modo claro/escuro) -->
-  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+    }
 
-  <title>Meu App PWA</title>
+    h1 {
+      margin-bottom: 24px;
+      font-size: 1.5rem;
+    }
 
-  <!-- Manifest do PWA -->
-  <link rel="manifest" href="/manifest.json">
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
 
-  <!-- Ícones padrão e iOS -->
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: background 0.25s ease, color 0.25s ease, opacity 0.25s ease;
+    }
 
-  <!-- Configurações iOS / iPad para comportamento de app nativo -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Meu App">
+    .card.disabled {
+      background: #e5e7eb;
+      color: #6b7280;
+      opacity: 0.75;
+    }
 
-  <!-- Apple status bar style legado -->
-  <meta name="apple-status-bar-style" content="black-translucent">
-    
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Fazenda Eunice - Pesagem Pro</title>
-    <style>
-        :root { --primary: #002366; --white: #ffffff; --bg: #f4f7f9; --accent: #28a745; }
-        body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; padding: 0; color: var(--primary); overflow: hidden; }
-        .app { display: flex; flex-direction: column; height: 100vh; }
-        
-        /* Header */
-        .header { background: var(--primary); color: white; padding: 15px; text-align: center; }
-        .header .date { font-size: 18px; font-weight: bold; text-transform: capitalize; }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
 
-        /* Nav */
-        .nav { display: flex; background: #001a4d; padding: 5px; gap: 5px; }
-        .nav-btn { flex: 1; padding: 15px; border: none; background: transparent; color: rgba(255,255,255,0.6); border-radius: 8px; font-weight: bold; font-size: 16px; }
-        .nav-btn.active { background: var(--white); color: var(--primary); }
+    .card-title {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
 
-        /* Dashboard */
-        .stats-bar { display: flex; background: #e9ecef; padding: 10px; gap: 10px; border-bottom: 2px solid #dee2e6; }
-        .stat-box { flex: 1; background: white; padding: 10px; border-radius: 8px; text-align: center; box-shadow: inset 0 0 5px rgba(0,0,0,0.05); }
-        .stat-box span { display: block; font-size: 12px; color: #666; font-weight: bold; }
-        .stat-box strong { font-size: 20px; color: var(--primary); }
+    .card-status {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
 
-        /* Content */
-        .content { flex: 1; padding: 15px; overflow-y: auto; box-sizing: border-box; }
-        .hidden { display: none; }
+    .card-body {
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
 
-        /* Pesagem */
-        .weight-input-area { background: var(--primary); color: white; padding: 25px; border-radius: 15px; text-align: center; margin-bottom: 15px; }
-        .weight-input-area input { background: transparent; border: none; color: white; font-size: 70px; width: 100%; text-align: center; font-weight: bold; outline: none; }
-        .id-input input { width: 100%; padding: 15px; font-size: 28px; border: 3px solid var(--primary); border-radius: 12px; text-align: center; box-sizing: border-box; margin-bottom: 15px; }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
 
-        .grid-lotes { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
-        .btn-lote { background: var(--primary); color: white; border: none; padding: 30px 10px; font-size: 22px; font-weight: bold; border-radius: 12px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
-        .btn-lote:active { transform: scale(0.96); }
+    .toggle-label {
+      font-size: 0.95rem;
+    }
 
-        /* Listas */
-        .card { background: white; padding: 15px; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        th, td { padding: 10px; border-bottom: 1px solid #f0f0f0; text-align: center; }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 48px;
+      height: 26px;
+    }
 
-        .btn { padding: 10px 15px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        .btn-csv { background: var(--accent); color: white; }
-        .btn-add { background: var(--primary); color: white; width: 100%; padding: 18px; font-size: 18px; margin-top: 10px; border-radius: 10px; }
-    </style>
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #9ca3af;
+      transition: 0.3s;
+      border-radius: 26px;
+    }
+
+    .slider::before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #2563eb;
+    }
+
+    input:checked + .slider::before {
+      transform: translateX(22px);
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: background 0.2s ease;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+
+    .btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h1>Dispositivos Conectados</h1>
+    <div id="app" class="grid"></div>
+  </div>
 
-<div class="app">
-    <div class="header">
-        <div class="date" id="current-date"></div>
-    </div>
-
-    <div class="nav">
-        <button class="nav-btn active" onclick="tab('pesagem', this)">PESAGEM</button>
-        <button class="nav-btn" onclick="tab('sessões', this)">SESSÕES</button>
-        <button class="nav-btn" onclick="tab('arquivos', this)">ARQUIVOS</button>
-    </div>
-
-    <div class="stats-bar">
-        <div class="stat-box"><span>ANIMAIS</span><strong id="stat-count">0</strong></div>
-        <div class="stat-box"><span>MÉDIA PESO</span><strong id="stat-avg">0.0</strong></div>
-    </div>
-
-    <!-- ABA PESAGEM -->
-    <div class="content" id="tab-pesagem">
-        <div class="weight-input-area">
-            <label style="font-size: 14px; opacity: 0.8;">PESO (KG)</label>
-            <input type="number" id="peso" placeholder="0.0" step="0.1" inputmode="decimal">
-        </div>
-        <div class="id-input">
-            <input type="number" id="brinco" placeholder="BRINCO (ID)" inputmode="numeric">
-        </div>
-        <div class="grid-lotes" id="grid-lotes"></div>
-    </div>
-
-    <!-- ABA SESSÕES -->
-    <div class="content hidden" id="tab-sessões">
-        <div id="lista-sessoes"></div>
-    </div>
-
-    <!-- ABA ARQUIVOS -->
-    <div class="content hidden" id="tab-arquivos">
-        <div id="lista-arquivos"></div>
-        <button class="btn-add" onclick="novoArquivo()">+ NOVO ARQUIVO/LOTE</button>
-    </div>
-</div>
-
-<script>
-    let dados = JSON.parse(localStorage.getItem('eunice_db')) || [];
-    let arquivos = JSON.parse(localStorage.getItem('eunice_files')) || [
-        { id: 1, nome: 'Lote 01', ativo: true },
-        { id: 2, nome: 'Lote 02', ativo: true }
+  <script>
+    const devices = [
+      { id: 1, name: "Câmera Frontal", status: "Ativo", filesEnabled: true },
+      { id: 2, name: "Sensor de Temperatura", status: "Ativo", filesEnabled: false },
+      { id: 3, name: "Leitor de QR Code", status: "Inativo", filesEnabled: true },
+      { id: 4, name: "Display OLED", status: "Ativo", filesEnabled: false }
     ];
 
-    function tab(id, btn) {
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        document.querySelectorAll('.content').forEach(c => c.classList.add('hidden'));
-        document.getElementById('tab-' + id).classList.remove('hidden');
-        updateStats();
-        if(id === 'pesagem') renderPesagem();
-        if(id === 'sessões') renderSessoes();
-        if(id === 'arquivos') renderArquivos();
+    function renderDeviceCard(device) {
+      const disabledClass = device.filesEnabled ? "" : "disabled";
+      const statusText = device.filesEnabled ? "Arquivos ativos" : "Arquivos desativados";
+      const checkedAttr = device.filesEnabled ? "checked" : "";
+      const buttonDisabled = device.filesEnabled ? "" : "disabled";
+
+      return `
+        <div class="card ${disabledClass}" data-id="${device.id}">
+          <div class="card-header">
+            <span class="card-title">${device.name}</span>
+            <span class="card-status">${device.status}</span>
+          </div>
+          <div class="card-body">
+            Gerencie este dispositivo e controle o acesso aos arquivos locais.
+          </div>
+          <div class="toggle-row">
+            <span class="toggle-label">Arquivos</span>
+            <label class="switch">
+              <input type="checkbox" data-toggle="${device.id}" ${checkedAttr}>
+              <span class="slider"></span>
+            </label>
+          </div>
+          <p class="card-status">${statusText}</p>
+          <div class="actions">
+            <button class="btn btn-primary" ${buttonDisabled}>Ações</button>
+          </div>
+        </div>
+      `;
     }
 
-    function updateStats() {
-        const count = dados.length;
-        const avg = count > 0 ? (dados.reduce((s, r) => s + parseFloat(r.peso), 0) / count).toFixed(1) : "0.0";
-        document.getElementById('stat-count').innerText = count;
-        document.getElementById('stat-avg').innerText = avg + " kg";
+    function renderApp() {
+      const app = document.getElementById("app");
+      app.innerHTML = devices.map(renderDeviceCard).join("");
     }
 
-    function renderPesagem() {
-        const grid = document.getElementById('grid-lotes');
-        grid.innerHTML = '';
-        arquivos.filter(a => a.ativo).slice(0, 6).forEach(arq => {
-            const b = document.createElement('button');
-            b.className = 'btn-lote';
-            b.innerText = arq.nome;
-            b.onclick = () => salvar(arq.nome);
-            grid.appendChild(b);
-        });
-    }
+    document.addEventListener("change", (event) => {
+      const toggle = event.target.closest("[data-toggle]");
+      if (!toggle) return;
 
-    function salvar(lote) {
-        const p = document.getElementById('peso').value;
-        const b = document.getElementById('brinco').value;
-        if(!p) return alert("Peso vazio!");
+      const id = Number(toggle.dataset.toggle);
+      const device = devices.find((d) => d.id === id);
+      if (device) {
+        device.filesEnabled = toggle.checked;
+        renderApp();
+      }
+    });
 
-        dados.push({
-            id: Date.now(),
-            data: new Date().toLocaleString('pt-BR'),
-            brinco: b || 'S/ID',
-            peso: p,
-            lote: lote
-        });
-
-        localStorage.setItem('eunice_db', JSON.stringify(dados));
-        document.getElementById('peso').value = '';
-        document.getElementById('brinco').value = '';
-        document.getElementById('peso').focus();
-        updateStats();
-    }
-
-    function renderSessoes() {
-        const container = document.getElementById('lista-sessoes');
-        container.innerHTML = '';
-        const grupos = [...new Set(dados.map(d => d.lote))];
-        
-        grupos.forEach(g => {
-            const itens = dados.filter(d => d.lote === g);
-            const div = document.createElement('div');
-            div.className = 'card';
-            div.innerHTML = `
-                <div class="card-header">
-                    <strong>${g} (${itens.length} cab.)</strong>
-                    <button class="btn btn-csv" onclick="exportar('${g}')">CSV</button>
-                </div>
-                <table>
-                    ${itens.slice(-5).reverse().map(i => `<tr><td>${i.brinco}</td><td>${i.peso}kg</td><td><button onclick="remover(${i.id})" style="color:red;border:none;background:none">X</button></td></tr>`).join('')}
-                </table>
-            `;
-            container.appendChild(div);
-        });
-    }
-
-    function renderArquivos() {
-        const container = document.getElementById('lista-arquivos');
-        container.innerHTML = '';
-        arquivos.forEach((arq, i) => {
-            const div = document.createElement('div');
-            div.className = 'card';
-            div.style.display = 'flex';
-            div.style.justifyContent = 'space-between';
-            div.innerHTML = `
-                <input type="text" value="${arq.nome}" onchange="renomear(${i}, this.value)" style="border:1px solid #ccc; padding:8px; border-radius:5px; width:60%">
-                <div>
-                    <input type="checkbox" ${arq.ativo ? 'checked' : ''} onchange="toggle(${i})"> Ativo
-                    <button onclick="apagarArq(${i})" style="color:red; border:none; background:none; margin-left:10px">X</button>
-                </div>
-            `;
-            container.appendChild(div);
-        });
-    }
-
-    function exportar(lote) {
-        const filtrados = dados.filter(d => d.lote === lote);
-        let csv = "Data,Brinco,Peso,Lote\n";
-        filtrados.forEach(f => csv += `${f.data},${f.brinco},${f.peso},${f.lote}\n`);
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `pesagem_${lote.replace(/\s+/g, '_')}.csv`;
-        a.click();
-    }
-
-    function remover(id) {
-        if(confirm("Excluir registro?")) {
-            dados = dados.filter(d => d.id !== id);
-            localStorage.setItem('eunice_db', JSON.stringify(dados));
-            renderSessoes();
-            updateStats();
-        }
-    }
-
-    function novoArquivo() {
-        arquivos.push({ id: Date.now(), nome: `Lote ${arquivos.length + 1}`, ativo: false });
-        localStorage.setItem('eunice_files', JSON.stringify(arquivos));
-        renderArquivos();
-    }
-
-    function renomear(i, val) { arquivos[i].nome = val; localStorage.setItem('eunice_files', JSON.stringify(arquivos)); }
-    function toggle(i) {
-        const ativos = arquivos.filter(a => a.ativo).length;
-        if(!arquivos[i].ativo && ativos >= 6) { alert("Máximo 6 ativos."); renderArquivos(); return; }
-        arquivos[i].ativo = !arquivos[i].ativo;
-        localStorage.setItem('eunice_files', JSON.stringify(arquivos));
-    }
-    function apagarArq(i) { if(confirm("Apagar arquivo?")) { arquivos.splice(i, 1); localStorage.setItem('eunice_files', JSON.stringify(arquivos)); renderArquivos(); } }
-
-    // Data no topo
-    const d = new Date();
-    const opcoes = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    document.getElementById('current-date').innerText = d.toLocaleDateString('pt-BR', opcoes);
-
-    renderPesagem();
-    updateStats();
-  <script>
-  // Registra o Service Worker para funcionar offline
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js')
-      .then((registration) => {
-        console.log('Service Worker registrado com sucesso:', registration);
-      })
-      .catch((error) => {
-        console.warn('Erro ao registrar Service Worker:', error);
-      });
-  }
-</script>
+    renderApp();
+  </script>
 </body>
 </html>
